@@ -57,8 +57,18 @@
         
         <div class="user-info">
             <h3>Bejelentkezve mint:</h3>
-            <p><strong>Név:</strong> {{ user.get('name', 'N/A') }}</p>
-            <p><strong>Email:</strong> {{ user.get('preferred_username', 'N/A') }}</p>
+            <p class="user-detail"><strong>Név:</strong> {{ user.get('display_name', user.get('name', 'N/A')) }}</p>
+            <p class="user-detail"><strong>Email:</strong> {{ user.get('email', 'N/A') }}</p>
+            <p class="user-detail"><strong>Beosztás:</strong> {{ user.get('job_title', 'N/A') }}</p>
+            <p class="user-detail"><strong>Részleg:</strong> {{ user.get('department', 'N/A') }}</p>
+            <p class="user-detail"><strong>Cég:</strong> {{ user.get('company_name', 'N/A') }}</p>
+            <p class="user-detail"><strong>Iroda:</strong> {{ user.get('office_location', 'N/A') }}</p>
+            <p class="user-detail"><strong>Mobil:</strong> {{ user.get('mobile_phone', 'N/A') }}</p>
+            <p class="user-detail"><strong>Telefon:</strong> {{ user.get('business_phones', ['N/A'])|first }}</p>
+            <p class="user-detail"><strong>Utca, házszám:</strong> {{ user.get('street_address', 'N/A') }}</p>
+            <p class="user-detail"><strong>Irányítószám:</strong> {{ user.get('postal_code', 'N/A') }}</p>
+            <p class="user-detail"><strong>Város:</strong> {{ user.get('city', 'N/A') }}</p>
+            <p class="user-detail"><strong>Ország:</strong> {{ user.get('country', 'N/A') }}</p>
         </div>
 
         <a href="{{ url_for('generate_signature') }}" class="generate-btn">

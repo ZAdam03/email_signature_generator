@@ -56,6 +56,9 @@ def authorized():
             user_info = _get_user_info_from_graph(access_token)
             if user_info:
                 session["user"].update(user_info)
+                # Ha van mail a Graph-tól, használjuk azt
+                if user_info.get("mail"):
+                    session["user"]["email"] = user_info.get("mail")
         except Exception as e:
             print(f"Graph API hiba: {e}")
     
@@ -144,22 +147,35 @@ def _get_user_info_from_graph(access_token):
     
     # Graph API endpoint a felhasználó részletes adataihoz
     graph_response = requests.get(
-        "https://graph.microsoft.com/v1.0/me",
+        "https://graph.microsoft.com/v1.0/me?"
+        "$select=displayName,jobTitle,department,companyName,"
+        "officeLocation,mobilePhone,businessPhones,mail,userPrincipalName,"
+        "streetAddress,postalCode,city,country",
         headers=headers,
         timeout=30
     )
     
     if graph_response.status_code == 200:
         user_data = graph_response.json()
-        print("Graph API részletes adatok:", user_data)  # Debug információ
+        print("Graph API válasz:", user_data)  # Debug információ
         return {
+            "display_name": user_data.get("displayName"),
             "job_title": user_data.get("jobTitle"),
+            "department": user_data.get("department"),
+            "company_name": user_data.get("companyName"),
             "office_location": user_data.get("officeLocation"),
             "mobile_phone": user_data.get("mobilePhone"),
             "business_phones": user_data.get("businessPhones", []),
-            "street_address": user_data.get("streetAddress")
+            "mail": user_data.get("mail"),
+            "user_principal_name": user_data.get("userPrincipalName"),
+            "street_address": user_data.get("streetAddress"),
+            "postal_code": user_data.get("postalCode"),
+            "city": user_data.get("city"),
+            "country": user_data.get("country")
         }
-    return None
-
+    else:
+        print(f"Graph API hiba: {graph_response.status_code} - {graph_response.text}")
+        return None
+    
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=app_config.Config.PORT, debug=True)
